@@ -1,0 +1,23 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:postgresql://localhost:5432/thejoo_dev
+    username: thejoo_dev_admin
+    password: Admin123Admin123
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+        default_schema: thejoo_main
+
+token:
+  keystore:
+    type: PKCS12
+    filename: thejoo-keystore-dev.p12
+    password: Admin123Admin123
+  signing-key:
+    alias: thejoo-token-dev-key-leaf
+    password: ${token.keystore.password}
