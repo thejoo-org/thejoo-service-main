@@ -1,36 +1,31 @@
 package com.thejoo.thejooservicemain.entity
 
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import java.time.LocalDateTime
 import javax.persistence.*
 
 @Entity
 @Table(name = "users")
-data class User(
+class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    var id: Long? = null,
     @Column
-    var name: String? = null,
+    val name: String,
     @Column
-    var email: String? = null,
-    @CreatedDate
+    val email: String,
+    @ElementCollection(targetClass = Role::class)
     @Column
-    var createdAt: LocalDateTime? = null,
-    @LastModifiedDate
-    @Column
-    var updatedAt: LocalDateTime? = null,
-    @Version
-    @Column
-    var version: Long? = null,
-): UserDetails {
-    fun getIdInString(): String = id.toString()
+    val roles: List<Role>? = listOf(),
+): AbstractAuditableEntity(), UserDetails {
+    constructor(id: Long, roles: List<Role>) : this(id = id, roles = roles, name = "", email = "")
 
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority> = arrayListOf(TEMPORARY_DEFAULT_AUTHORITY)
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
+        roles!!
+            .map(Role::name)
+            .map(::SimpleGrantedAuthority)
+            .toMutableSet()
 
     override fun getPassword(): String = id.toString()
 

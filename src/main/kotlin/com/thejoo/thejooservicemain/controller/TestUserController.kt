@@ -16,12 +16,12 @@ class TestUserController(
     @GetMapping
     fun getUsers(): List<TempUserResponse> {
         return userService.getAllUsers()
-            .map { TempUserResponse(id = it.id, name = it.name,) }
+            .map { TempUserResponse(id = it.id!!, name = it.name,) }
     }
 
     @JsonInclude
     data class TempUserResponse(
         val id: Long,
-        val name: String?,
+        val name: String,
     )
 }

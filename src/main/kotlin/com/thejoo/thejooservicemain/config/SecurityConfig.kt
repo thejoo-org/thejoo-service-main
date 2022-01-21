@@ -29,7 +29,7 @@ class SecurityConfig(
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers("/api/test/token").permitAll()
+            .antMatchers("/api/test/token/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .apply(jwtSecurityConfig)
