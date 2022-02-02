@@ -1,5 +1,8 @@
 package com.thejoo.thejooservicemain.controller.domain
 
-data class GetTokenResponse(
+import com.fasterxml.jackson.annotation.JsonInclude
+
+@JsonInclude
+data class SimpleTokenResponse(
     val token: String,
 )

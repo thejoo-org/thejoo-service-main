@@ -1,6 +1,6 @@
 package com.thejoo.thejooservicemain.controller
 
-import com.thejoo.thejooservicemain.controller.domain.GetTokenResponse
+import com.thejoo.thejooservicemain.controller.domain.SimpleTokenResponse
 import com.thejoo.thejooservicemain.service.JwtProviderService
 import com.thejoo.thejooservicemain.service.UserService
 import org.springframework.context.annotation.Profile
@@ -17,9 +17,8 @@ class TestTokenController(
     private val jwtProviderService: JwtProviderService,
 ) {
     @GetMapping("/{id}")
-    fun getToken(@PathVariable id: Long): GetTokenResponse {
-        return userService.getUserById(id)
+    fun getToken(@PathVariable id: Long): SimpleTokenResponse =
+        userService.getUserById(id)
             .let(jwtProviderService::generateAuthToken)
-            .let { GetTokenResponse(token = it) }
-    }
+            .let { SimpleTokenResponse(token = it) }
 }

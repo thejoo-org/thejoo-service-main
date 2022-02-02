@@ -1,5 +1,6 @@
 package com.thejoo.thejooservicemain.entity
 
+import com.thejoo.thejooservicemain.infrastructure.converter.ArrayStringConverter
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -15,17 +16,14 @@ class User(
     val name: String,
     @Column
     val email: String,
-    @ElementCollection(targetClass = Role::class)
+    @Convert(converter = ArrayStringConverter::class)
     @Column
-    val roles: List<Role>? = listOf(),
+    val roles: List<String> = listOf(),
 ): AbstractAuditableEntity(), UserDetails {
-    constructor(id: Long, roles: List<Role>) : this(id = id, roles = roles, name = "", email = "")
+    constructor(id: Long, roles: List<Role>) : this(id = id, roles = roles.map(Role::name), name = "", email = "")
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
-        roles!!
-            .map(Role::name)
-            .map(::SimpleGrantedAuthority)
-            .toMutableSet()
+        roles.map(::SimpleGrantedAuthority).toMutableSet()
 
     override fun getPassword(): String = id.toString()
 
@@ -38,6 +36,9 @@ class User(
     override fun isCredentialsNonExpired(): Boolean = true
 
     override fun isEnabled(): Boolean = true
+
+    override fun toString(): String =
+        "User(id=$id, name='$name', email='$email', roles=$roles)"
 
     companion object {
         val TEMPORARY_DEFAULT_AUTHORITY = SimpleGrantedAuthority("ROLE_USER")

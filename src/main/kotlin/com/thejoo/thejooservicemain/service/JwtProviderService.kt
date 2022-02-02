@@ -1,20 +1,21 @@
 package com.thejoo.thejooservicemain.service
 
 import com.auth0.jwt.JWT
-import com.auth0.jwt.algorithms.Algorithm
+import com.thejoo.thejooservicemain.config.TokenConfig
+import com.thejoo.thejooservicemain.config.token.TokenConstants
+import com.thejoo.thejooservicemain.entity.Promotion
 import com.thejoo.thejooservicemain.entity.User
-import com.thejoo.thejooservicemain.repository.UserRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import java.time.Duration
 import java.time.Instant
 import java.util.*
 
 @Service
 class JwtProviderService(
-    private val authTokenAlgorithm: Algorithm,
-    private val promotionReadTokenAlgorithm: Algorithm,
+    private val authTokenConfig: TokenConfig,
+    private val userReadTokenConfig: TokenConfig,
+    private val promotionTokenConfig: TokenConfig,
 ) {
     private val log: Logger = LoggerFactory.getLogger(javaClass)
 
@@ -22,31 +23,41 @@ class JwtProviderService(
         val now = Instant.now()
         return JWT.create()
             .withJWTId(UUID.randomUUID().toString())
-            .withIssuer("thejoo-token-service")
-            .withAudience("thejoo-services")
+            .withIssuer(authTokenConfig.issuer)
+            .withAudience(authTokenConfig.audience)
             .withSubject(user.id.toString())
             .withIssuedAt(Date.from(now))
             .withNotBefore(Date.from(now))
-            .withExpiresAt(Date.from(now.plus(Duration.ofHours(12))))
-            .withClaim(ROLES_CLAIM_NAME, user.roles)
-            .sign(authTokenAlgorithm)
+            .withExpiresAt(Date.from(now.plus(authTokenConfig.duration)))
+            .withClaim(TokenConstants.CLAIM_NAME_ROLES, user.roles)
+            .sign(authTokenConfig.algorithm)
     }
 
-    fun generatePromotionReadToken(user: User): String {
+    fun generateUserReadToken(user: User): String {
         val now = Instant.now()
         return JWT.create()
             .withJWTId(UUID.randomUUID().toString())
-            .withIssuer("thejoo-token-service")
-            .withAudience("thejoo-services")
+            .withIssuer(userReadTokenConfig.issuer)
+            .withAudience(userReadTokenConfig.audience)
             .withSubject(user.id.toString())
             .withIssuedAt(Date.from(now))
             .withNotBefore(Date.from(now))
-            .withExpiresAt(Date.from(now.plus(Duration.ofHours(12))))
-            .withClaim(ROLES_CLAIM_NAME, user.roles)
-            .sign(promotionReadTokenAlgorithm)
+            .withExpiresAt(Date.from(now.plus(userReadTokenConfig.duration)))
+            .sign(userReadTokenConfig.algorithm)
     }
 
-    companion object {
-        const val ROLES_CLAIM_NAME = "roles"
+    fun generatePromotionToken(owner: User, promotion: Promotion): String {
+        val now = Instant.now()
+        return JWT.create()
+            .withJWTId(UUID.randomUUID().toString())
+            .withIssuer(owner.id.toString())
+            .withAudience(promotionTokenConfig.audience)
+            .withSubject(promotion.id.toString())
+            .withIssuedAt(Date.from(now))
+            .withNotBefore(Date.from(now))
+            .withExpiresAt(Date.from(now.plus(promotionTokenConfig.duration)))
+            .withClaim(TokenConstants.CLAIM_NAME_STORE_ID, promotion.storeId)
+            .withClaim(TokenConstants.CLAIM_NAME_PROMOTION_UUID, UUID.randomUUID().toString())
+            .sign(promotionTokenConfig.algorithm)
     }
 }

@@ -1,6 +1,5 @@
 package com.thejoo.thejooservicemain.entity
 
-import lombok.Getter
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -10,19 +9,18 @@ import javax.persistence.EntityListeners
 import javax.persistence.MappedSuperclass
 import javax.persistence.Version
 
-@Getter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class AbstractAuditableEntity {
     @CreatedDate
-    @Column
+    @Column(name = "created_at")
     lateinit var createdAt: LocalDateTime
 
     @LastModifiedDate
-    @Column
+    @Column(name = "updated_at")
     lateinit var updatedAt: LocalDateTime
 
     @Version
-    @Column
+    @Column(name = "version")
     var version: Long = 0
 }

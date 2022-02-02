@@ -11,9 +11,13 @@ class Promotion(
     @Column
     val storeId: Long,
     @Column
-    var point: Long? = null,
+    var point: Long = 0,
     @Column
     val title: String,
     @Column
     val description: String,
-): AbstractAuditableEntity()
+): AbstractAuditableEntity() {
+
+    override fun toString(): String =
+        "Promotion(id=$id, storeId=$storeId, point=$point, title='$title', description='$description')"
+}

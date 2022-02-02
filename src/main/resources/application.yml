@@ -6,22 +6,38 @@ spring:
     url: jdbc:postgresql://localhost:5432/thejoo_dev
     username: thejoo_dev_admin
     password: Admin123Admin123
+    hikari:
+      minimum-idle: 1
   jpa:
     show-sql: true
     properties:
       hibernate:
         format-sql: true
         default_schema: thejoo_main
+server:
+  error:
+    include-stacktrace: NEVER
 
 token:
   keystore:
     type: PKCS12
     filename: thejoo-keystore-dev.p12
     password: Admin123Admin123
-  signing-key:
+  properties:
     auth:
       alias: thejoo-auth-leaf
       password: ${token.keystore.password}
-    promotion-read:
-      alias: thejoo-promotion-read-leaf
+      issuer: thejoo-token-service
+      audience: thejoo-services
+      duration: PT3H
+    user-read:
+      alias: thejoo-user-read-leaf
       password: ${token.keystore.password}
+      issuer: thejoo-token-service
+      audience: thejoo-services
+      duration: PT15M
+    promotion:
+      alias: thejoo-promotion-leaf
+      password: ${token.keystore.password}
+      audience: thejoo-services
+      duration: PT15M
