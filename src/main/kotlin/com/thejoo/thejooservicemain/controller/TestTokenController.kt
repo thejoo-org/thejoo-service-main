@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Profile(value = ["dev", "test"])
+@Profile(value = ["dev", "test", "sandbox"])
 @RequestMapping("/api/test/token")
 @RestController
 class TestTokenController(

@@ -17,7 +17,6 @@ spring:
 server:
   error:
     include-stacktrace: NEVER
-
 token:
   keystore:
     type: PKCS12
@@ -27,17 +26,62 @@ token:
     auth:
       alias: thejoo-auth-leaf
       password: ${token.keystore.password}
-      issuer: thejoo-token-service
-      audience: thejoo-services
+      issuer: thejoo-token-service-dev
+      audience: thejoo-services-dev
       duration: PT3H
     user-read:
       alias: thejoo-user-read-leaf
       password: ${token.keystore.password}
-      issuer: thejoo-token-service
-      audience: thejoo-services
+      issuer: thejoo-token-service-dev
+      audience: thejoo-services-dev
       duration: PT15M
     promotion:
       alias: thejoo-promotion-leaf
       password: ${token.keystore.password}
-      audience: thejoo-services
+      audience: thejoo-services-dev
+      duration: PT15M
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: sandbox
+  datasource:
+    url: jdbc:postgresql://thejoo-dev.csmjwfz4i4c8.ap-northeast-2.rds.amazonaws.com/thejoo
+    username: thejoo_sandbox_admin
+    password: '#c6k9FuW4w'
+    hikari:
+      minimum-idle: 1
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+        default_schema: thejoo_main_sandbox
+server:
+  error:
+    include-stacktrace: NEVER
+token:
+  keystore:
+    type: PKCS12
+    filename: thejoo-keystore-dev.p12
+    password: Admin123Admin123
+  properties:
+    auth:
+      alias: thejoo-auth-leaf
+      password: ${token.keystore.password}
+      issuer: thejoo-token-service-sandbox
+      audience: thejoo-services-sandbox
+      duration: PT3H
+    user-read:
+      alias: thejoo-user-read-leaf
+      password: ${token.keystore.password}
+      issuer: thejoo-token-service-sandbox
+      audience: thejoo-services-sandbox
+      duration: PT15M
+    promotion:
+      alias: thejoo-promotion-leaf
+      password: ${token.keystore.password}
+      audience: thejoo-services-sandbox
       duration: PT15M
