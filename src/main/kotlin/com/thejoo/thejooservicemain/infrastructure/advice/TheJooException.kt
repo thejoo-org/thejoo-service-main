@@ -22,6 +22,13 @@ data class TheJooException(
                 errorMessage = errorMessage,
             )
 
+        fun ofUnauthorized(errorMessage: String? = "유저 인증 실패") =
+            TheJooException(
+                statusCode = HttpStatus.UNAUTHORIZED,
+                errorCode = ExceptionCode.UNAUTHORIZED,
+                errorMessage = errorMessage,
+            )
+
         fun ofEntityNotFound(errorMessage: String?) =
             TheJooException(
                 statusCode = HttpStatus.NOT_FOUND,
@@ -58,6 +65,7 @@ enum class ExceptionCode {
      */
     BAD_REQUEST,
     ENTITY_NOT_FOUND,
+    UNAUTHORIZED,
     ACCESS_DENIED,
     INTERNAL_SERVER_ERROR,
 

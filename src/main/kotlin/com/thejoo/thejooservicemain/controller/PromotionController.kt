@@ -8,12 +8,15 @@ import com.thejoo.thejooservicemain.config.security.subjectAsLong
 import com.thejoo.thejooservicemain.config.token.TokenConstants
 import com.thejoo.thejooservicemain.controller.domain.ApplyPromotionRequest
 import com.thejoo.thejooservicemain.controller.domain.ApplyPromotionResponse
+import com.thejoo.thejooservicemain.controller.domain.GeneratePromotionTokenRequest
 import com.thejoo.thejooservicemain.controller.domain.SimpleTokenResponse
 import com.thejoo.thejooservicemain.infrastructure.advice.ExceptionCode
 import com.thejoo.thejooservicemain.infrastructure.advice.TheJooException
 import com.thejoo.thejooservicemain.service.*
 import com.thejoo.thejooservicemain.service.domain.ApplyPromotionResult
 import com.thejoo.thejooservicemain.service.domain.ApplyPromotionSpec
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.*
 import java.security.Principal
 import java.util.*
 
+@Tag(name = "프로모션")
 @RequestMapping("/api/promotions")
 @RestController
 class PromotionController(
@@ -32,18 +36,26 @@ class PromotionController(
 ) {
     private val log = LoggerFactory.getLogger(PromotionController::class.java)
 
+    @Operation(summary = "프로모션 토큰 생성", description = "프로모션 토큰 생성")
     @PreAuthorize("hasRole('OWNER')")
-    @PostMapping("/{id}/generate-token")
-    fun generateToken(@PathVariable id: Long, principal: Principal): SimpleTokenResponse {
+    @PostMapping("/generate-token")
+    fun generateToken(
+        @RequestBody generatePromotionTokenRequest: GeneratePromotionTokenRequest,
+        principal: Principal,
+    ): SimpleTokenResponse {
         val owner = userService.getUserById(principal.name)
-        return promotionService.getPromotionById(id)
+        return promotionService.getPromotionById(generatePromotionTokenRequest.promotionId)
             .let { jwtProviderService.generatePromotionToken(owner, it) }
             .let { SimpleTokenResponse(token = it) }
     }
 
+    @Operation(summary = "프로모션 적용", description = "프로모션 적용")
     @PreAuthorize("hasRole('OWNER')")
     @PostMapping("/apply")
-    fun applyPromotion(principal: Principal, @RequestBody applyPromotionRequest: ApplyPromotionRequest): ApplyPromotionResponse {
+    fun applyPromotion(
+        @RequestBody applyPromotionRequest: ApplyPromotionRequest,
+        principal: Principal,
+    ): ApplyPromotionResponse {
         return try {
             val userId = jwtVerifierService
                 .verifyUserReadToken(applyPromotionRequest.targetUserToken)
