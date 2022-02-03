@@ -17,7 +17,9 @@ spring:
 server:
   error:
     include-stacktrace: NEVER
-
+springdoc:
+  swagger-ui:
+    path: /doc
 token:
   keystore:
     type: PKCS12
