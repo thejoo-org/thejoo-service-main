@@ -1,4 +1,21 @@
 spring:
+  application:
+    name: thejoo-service-main
+springdoc:
+  swagger-ui:
+    path: /doc
+    tags-sorter: alpha
+    operations-sorter: alpha
+    supported-submit-methods: []
+    disable-swagger-default-url: true
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+logging.level:
+    org.hibernate.SQL: DEBUG
+
+---
+
+spring:
   config:
     activate:
       on-profile: dev
@@ -9,7 +26,7 @@ spring:
     hikari:
       minimum-idle: 1
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format-sql: true
@@ -17,9 +34,6 @@ spring:
 server:
   error:
     include-stacktrace: NEVER
-springdoc:
-  swagger-ui:
-    path: /doc
 token:
   keystore:
     type: PKCS12
@@ -57,7 +71,7 @@ spring:
     hikari:
       minimum-idle: 1
   jpa:
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format-sql: true
@@ -65,9 +79,6 @@ spring:
 server:
   error:
     include-stacktrace: NEVER
-springdoc:
-  swagger-ui:
-    path: /doc
 token:
   keystore:
     type: PKCS12

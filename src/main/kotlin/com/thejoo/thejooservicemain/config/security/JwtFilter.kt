@@ -1,7 +1,6 @@
 package com.thejoo.thejooservicemain.config.security
 
 import com.thejoo.thejooservicemain.service.JwtVerifierService
-import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -15,7 +14,6 @@ import javax.servlet.http.HttpServletResponse
 class JwtFilter(
     private val jwtVerifierService: JwtVerifierService,
 ): OncePerRequestFilter() {
-    private val log = LoggerFactory.getLogger(javaClass)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -24,12 +22,10 @@ class JwtFilter(
     ) {
         try {
             val jwt = request.getJwt()
-            log.info(jwt)
             SecurityContextHolder.getContext().authentication = jwtVerifierService.verifyAndBuildUserFromAuthToken(token = jwt)
                 .let { UsernamePasswordAuthenticationToken(it, jwt, it.authorities) }
             filterChain.doFilter(request, response)
         } catch (e: Exception) {
-            log.error("Auth token NOT configured...")
             filterChain.doFilter(request, response)
         }
     }

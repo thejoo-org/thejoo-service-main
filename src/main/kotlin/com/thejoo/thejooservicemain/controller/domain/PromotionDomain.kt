@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
 
 @JsonInclude
+data class GeneratePromotionTokenRequest(
+    @JsonProperty("promotion_id") val promotionId: Long,
+)
+
+@JsonInclude
 data class ApplyPromotionRequest(
     @JsonProperty("target_user_token") val targetUserToken: String,
     @JsonProperty("promotion_token") val promotionToken: String,
