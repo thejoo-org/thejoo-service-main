@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Profile(value = ["dev", "test"])
+@Profile(value = ["dev", "test", "sandbox"])
 @RequestMapping("/api/users")
 @RestController
 class TestUserController(
