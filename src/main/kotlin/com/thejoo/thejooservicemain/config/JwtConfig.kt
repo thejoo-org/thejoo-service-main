@@ -4,6 +4,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import com.thejoo.thejooservicemain.config.token.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.io.ClassPathResource
 import java.security.KeyStore
 import java.security.interfaces.ECPrivateKey
 import java.security.interfaces.ECPublicKey
@@ -15,7 +16,7 @@ class JwtConfig(
 ) {
     private val keyStore: KeyStore = KeyStore.getInstance(tokenKeyStoreProperties.type)
     init {
-        val keyStoreInputStream = ClassLoader.getSystemResourceAsStream(tokenKeyStoreProperties.filename)
+        val keyStoreInputStream = ClassPathResource(tokenKeyStoreProperties.filename).inputStream
         keyStore.load(keyStoreInputStream, tokenKeyStoreProperties.password.toCharArray())
     }
 
