@@ -10,7 +10,7 @@ class Membership(
     var id: Long? = null,
     @Column
     val userId: Long,
-    @Column
+    @Column(name = "store_id")
     val storeId: Long,
     @Column
     var point: Long,
