@@ -14,7 +14,6 @@ logging.level:
     org.hibernate.SQL: DEBUG
 
 ---
-
 spring:
   config:
     activate:
@@ -34,6 +33,7 @@ spring:
 server:
   error:
     include-stacktrace: NEVER
+  port: 8080
 token:
   keystore:
     type: PKCS12
@@ -79,6 +79,7 @@ spring:
 server:
   error:
     include-stacktrace: NEVER
+  port: 8080
 token:
   keystore:
     type: PKCS12
