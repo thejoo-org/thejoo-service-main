@@ -1,6 +1,15 @@
 spring:
   application:
     name: thejoo-service-main
+  datasource:
+    username: ${MAIN_SERVICE_DATABASE_USER}
+    password: ${MAIN_SERVICE_DATABASE_PASSWORD}
+  jpa:
+    open-in-view: false
+server:
+  error:
+    include-stacktrace: NEVER
+  port: 8080
 springdoc:
   swagger-ui:
     path: /doc
@@ -12,8 +21,31 @@ springdoc:
   default-produces-media-type: application/json
 logging.level:
     org.hibernate.SQL: DEBUG
+token:
+  default-issuer: ${spring.application.name}-${spring.profiles.active}
+  default-audience: ${spring.application.name}-${spring.profiles.active}
+  keystore:
+    type: JKS
+    filename: thejoo-keystore-${spring.profiles.active}.jks
+    password: ${MAIN_SERVICE_KEYSTORE_PASSWORD}
+  properties:
+    auth:
+      alias: thejoo-auth-leaf
+      password: ${token.keystore.password}
+      issuer: ${token.default-issuer}
+      audience: ${token.default-audience}
+    user-read:
+      alias: thejoo-user-qr-leaf
+      password: ${token.keystore.password}
+      issuer: ${token.default-issuer}
+      audience: ${token.default-audience}
+    promotion:
+      alias: thejoo-promotion-leaf
+      password: ${token.keystore.password}
+      audience: ${token.default-audience}
 
 ---
+
 spring:
   config:
     activate:
@@ -22,40 +54,21 @@ spring:
     url: jdbc:postgresql://localhost:5432/thejoo_dev
     username: thejoo_dev_admin
     password: Admin123Admin123
-    hikari:
-      minimum-idle: 1
   jpa:
     show-sql: false
     properties:
       hibernate:
         format-sql: true
         default_schema: thejoo_main
-server:
-  error:
-    include-stacktrace: NEVER
-  port: 8080
 token:
   keystore:
-    type: PKCS12
-    filename: thejoo-keystore-dev.p12
     password: Admin123Admin123
   properties:
     auth:
-      alias: thejoo-auth-leaf
-      password: ${token.keystore.password}
-      issuer: thejoo-token-service-dev
-      audience: thejoo-services-dev
       duration: PT3H
     user-read:
-      alias: thejoo-user-read-leaf
-      password: ${token.keystore.password}
-      issuer: thejoo-token-service-dev
-      audience: thejoo-services-dev
       duration: PT15M
     promotion:
-      alias: thejoo-promotion-leaf
-      password: ${token.keystore.password}
-      audience: thejoo-services-dev
       duration: PT15M
 
 ---
@@ -66,40 +79,17 @@ spring:
       on-profile: sandbox
   datasource:
     url: jdbc:postgresql://thejoo-dev.csmjwfz4i4c8.ap-northeast-2.rds.amazonaws.com/thejoo
-    username: thejoo_sandbox_admin
-    password: '#c6k9FuW4w'
-    hikari:
-      minimum-idle: 1
   jpa:
     show-sql: false
     properties:
       hibernate:
         format-sql: true
         default_schema: thejoo_main_sandbox
-server:
-  error:
-    include-stacktrace: NEVER
-  port: 8080
 token:
-  keystore:
-    type: PKCS12
-    filename: thejoo-keystore-dev.p12
-    password: Admin123Admin123
   properties:
     auth:
-      alias: thejoo-auth-leaf
-      password: ${token.keystore.password}
-      issuer: thejoo-token-service-sandbox
-      audience: thejoo-services-sandbox
-      duration: PT3H
+      duration: PT15M
     user-read:
-      alias: thejoo-user-read-leaf
-      password: ${token.keystore.password}
-      issuer: thejoo-token-service-sandbox
-      audience: thejoo-services-sandbox
-      duration: PT15M
+      duration: PT1M
     promotion:
-      alias: thejoo-promotion-leaf
-      password: ${token.keystore.password}
-      audience: thejoo-services-sandbox
-      duration: PT15M
+      duration: PT1M
