@@ -17,7 +17,8 @@ class SecurityConfig(
     private val jwtSecurityConfig: JwtSecurityConfig,
 ): WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
-        http!!.csrf().and().cors().disable()
+        // TODO: Configure CORS
+        http!!.csrf().disable()
             .exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler)
