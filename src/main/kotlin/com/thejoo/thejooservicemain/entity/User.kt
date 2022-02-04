@@ -1,6 +1,8 @@
 package com.thejoo.thejooservicemain.entity
 
-import com.thejoo.thejooservicemain.infrastructure.converter.ArrayStringConverter
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType
+import org.hibernate.annotations.Type
+import org.hibernate.annotations.TypeDef
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -8,6 +10,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "users")
+@TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,8 +19,8 @@ class User(
     val name: String,
     @Column
     val email: String,
-    @Convert(converter = ArrayStringConverter::class)
-    @Column
+    @Type(type = "jsonb")
+    @Column(name = "roles", columnDefinition = "jsonb")
     val roles: List<String> = listOf(),
 ): AbstractAuditableEntity(), UserDetails {
     constructor(id: Long, roles: List<Role>) : this(id = id, roles = roles.map(Role::name), name = "", email = "")

@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-ui:1.6.5")
 	implementation("org.springdoc:springdoc-openapi-webmvc-core:1.6.5")
 	implementation("org.springdoc:springdoc-openapi-kotlin:1.6.5")
+	implementation("com.vladmihalcea:hibernate-types-55:2.14.0")
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("io.micrometer:micrometer-registry-prometheus")
