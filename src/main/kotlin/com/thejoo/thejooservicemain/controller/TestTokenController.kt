@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "[개발용] 유저 토큰")
 @Profile(value = ["dev", "test", "sandbox"])
-@RequestMapping("/api/test/token")
+@RequestMapping("/api/test/tokens")
 @RestController
 class TestTokenController(
     private val userService: UserService,
