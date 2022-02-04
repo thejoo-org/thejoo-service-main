@@ -6,11 +6,9 @@ import com.thejoo.thejooservicemain.controller.domain.SimpleTokenResponse
 import com.thejoo.thejooservicemain.entity.Membership
 import com.thejoo.thejooservicemain.service.JwtProviderService
 import com.thejoo.thejooservicemain.service.MembershipService
-import com.thejoo.thejooservicemain.service.QrCodeProviderService
 import com.thejoo.thejooservicemain.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -23,17 +21,7 @@ class MeController(
     private val userService: UserService,
     private val membershipService: MembershipService,
     private val jwtProviderService: JwtProviderService,
-    private val qrCodeProviderService: QrCodeProviderService,
 ) {
-    @Deprecated(message = "getQrCodeForUser is deprecated")
-    @Operation(summary = "유저 QR", description = "유저 QR", deprecated = true)
-    @GetMapping(path = ["/qr-code/for-read-promotion"], produces = [MediaType.IMAGE_PNG_VALUE])
-    fun getQrCodeForUser(principal: Principal): ByteArray? =
-        principal.name
-            .let(userService::getUserById)
-            .let(jwtProviderService::generateUserReadToken)
-            .let(qrCodeProviderService::generateQrCodeForReadableToken)
-
     @Operation(summary = "유저 QR 토큰", description = "유저 QR 렌더링을 위한 토큰")
     @GetMapping("/token/for-read-promotion")
     fun getTokenForPromotion(principal: Principal) =
@@ -42,7 +30,11 @@ class MeController(
             .let(jwtProviderService::generateUserReadToken)
             .let { SimpleTokenResponse(token = it) }
 
-    @Operation(summary = "내 멤버쉽 리스트 조회", description = "내 멤버쉽 리스트 조회")
+    @Operation(
+        hidden = true,
+        summary = "내 멤버쉽 리스트 조회",
+        description = "내 멤버쉽 리스트 조회",
+    )
     @GetMapping("/memberships")
     fun getMemberships(principal: Principal): List<MembershipIndexResponse> =
         userService.getUserById(principal.nameAsLong())
