@@ -23,7 +23,7 @@ class MeController(
     private val jwtProviderService: JwtProviderService,
 ) {
     @Operation(summary = "유저 QR 토큰", description = "유저 QR 렌더링을 위한 토큰")
-    @GetMapping("/token/for-read-promotion")
+    @GetMapping("/tokens/for-qr")
     fun getTokenForPromotion(principal: Principal) =
         principal.name
             .let(userService::getUserById)
