@@ -88,8 +88,8 @@ spring:
 token:
   properties:
     auth:
-      duration: PT15M
+      duration: PT30M
     user-read:
-      duration: PT1M
+      duration: PT5M
     promotion:
-      duration: PT1M
+      duration: PT5M
