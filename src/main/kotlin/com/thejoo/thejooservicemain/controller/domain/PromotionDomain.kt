@@ -32,6 +32,9 @@ data class ApplyPromotionResponse(
     @Schema(description = "적용 대상 멤버쉽 ID")
     @JsonProperty("membership_id")
     val membershipId: Long,
+    @Schema(description = "거래 내역 ID")
+    @JsonProperty("transaction_history_id")
+    val transactionHistoryId: Long,
     @Schema(description = "적용된 포인트")
     @JsonProperty("added_point")
     val addedPoint: Long,

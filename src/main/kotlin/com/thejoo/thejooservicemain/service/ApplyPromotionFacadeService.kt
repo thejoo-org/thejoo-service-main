@@ -1,5 +1,7 @@
 package com.thejoo.thejooservicemain.service
 
+import com.thejoo.thejooservicemain.entity.TransactionType
+import com.thejoo.thejooservicemain.infrastructure.advice.TheJooException
 import com.thejoo.thejooservicemain.service.domain.ApplyPromotionResult
 import com.thejoo.thejooservicemain.service.domain.ApplyPromotionSpec
 import org.springframework.stereotype.Service
@@ -9,6 +11,7 @@ import javax.transaction.Transactional
 class ApplyPromotionFacadeService(
     private val promotionService: PromotionService,
     private val promotionHistoryService: PromotionHistoryService,
+    private val transactionHistoryService: TransactionHistoryService,
     private val membershipService: MembershipService,
     private val userService: UserService,
     private val storeService: StoreService,
@@ -24,7 +27,23 @@ class ApplyPromotionFacadeService(
             val targetUser = userService.getUserById(applyPromotionSpec.targetUserId)
             val membership = membershipService.getOrRegisterMembership(targetUser, targetStore)
                 .let { membershipService.addPointToMembership(membership = it, targetPromotion.point) }
-            ApplyPromotionResult(user = targetUser, membership = membership, promotion = targetPromotion)
+
+            // TODO: This should be handled with steps (UNKNOWN -> SUCCESS/FAIL)
+            val transactionHistory = transactionHistoryService.createTransactionHistoryAsync(
+                type = TransactionType.APPLY,
+                userId = targetUser.id!!,
+                promotionId = targetPromotion.id!!,
+                addedPoint = targetPromotion.point,
+                pointSnapshot = membership.point,
+                storeId = targetStore.id!!,
+            ).get()
+
+            ApplyPromotionResult(
+                user = targetUser,
+                membership = membership,
+                promotion = targetPromotion,
+                transactionHistory = transactionHistory,
+            )
         } catch (e: Exception) {
             promotionHistoryService.evict(applyPromotionSpec.promotionUUID)
             throw e
