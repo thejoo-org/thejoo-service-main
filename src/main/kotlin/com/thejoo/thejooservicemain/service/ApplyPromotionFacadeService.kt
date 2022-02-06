@@ -1,9 +1,10 @@
 package com.thejoo.thejooservicemain.service
 
+import com.thejoo.thejooservicemain.entity.TransactionStatus
 import com.thejoo.thejooservicemain.entity.TransactionType
-import com.thejoo.thejooservicemain.infrastructure.advice.TheJooException
 import com.thejoo.thejooservicemain.service.domain.ApplyPromotionResult
 import com.thejoo.thejooservicemain.service.domain.ApplyPromotionSpec
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import javax.transaction.Transactional
 
@@ -16,28 +17,29 @@ class ApplyPromotionFacadeService(
     private val userService: UserService,
     private val storeService: StoreService,
 ) {
+    private val log = LoggerFactory.getLogger(ApplyPromotionFacadeService::class.java)
+
     @Transactional
     fun execute(applyPromotionSpec: ApplyPromotionSpec): ApplyPromotionResult {
         promotionHistoryService.validate(applyPromotionSpec.promotionUUID)
-        promotionHistoryService.register(uuid = applyPromotionSpec.promotionUUID)
+        val targetPromotion = promotionService.getPromotionById(applyPromotionSpec.targetPromotionId)
+        val targetStore = storeService.getStoreById(targetPromotion.storeId)
+            .also { it.validateManageableBy(applyPromotionSpec.ownerId) }
+        val targetUser = userService.getUserById(applyPromotionSpec.targetUserId)
+        val membership = membershipService.getOrRegisterMembership(targetUser, targetStore)
+        val transactionHistory = transactionHistoryService.createTransactionHistoryAsync(
+            type = TransactionType.APPLY,
+            userId = targetUser.id!!,
+            promotionId = targetPromotion.id!!,
+            addedPoint = targetPromotion.point,
+            pointSnapshot = membership.point + targetPromotion.point,
+            storeId = targetStore.id!!,
+            data = emptyMap(),
+        ).get()
         return try {
-            val targetPromotion = promotionService.getPromotionById(applyPromotionSpec.targetPromotionId)
-            val targetStore = storeService.getStoreById(targetPromotion.storeId)
-                .also { it.validateManageableBy(applyPromotionSpec.ownerId) }
-            val targetUser = userService.getUserById(applyPromotionSpec.targetUserId)
-            val membership = membershipService.getOrRegisterMembership(targetUser, targetStore)
-                .let { membershipService.addPointToMembership(membership = it, targetPromotion.point) }
-
-            // TODO: This should be handled with steps (UNKNOWN -> SUCCESS/FAIL)
-            val transactionHistory = transactionHistoryService.createTransactionHistoryAsync(
-                type = TransactionType.APPLY,
-                userId = targetUser.id!!,
-                promotionId = targetPromotion.id!!,
-                addedPoint = targetPromotion.point,
-                pointSnapshot = membership.point,
-                storeId = targetStore.id!!,
-            ).get()
-
+            promotionHistoryService.register(uuid = applyPromotionSpec.promotionUUID)
+            membershipService.addPointToMembership(membership = membership, targetPromotion.point)
+            transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.SUCCESS)
             ApplyPromotionResult(
                 user = targetUser,
                 membership = membership,
@@ -45,7 +47,9 @@ class ApplyPromotionFacadeService(
                 transactionHistory = transactionHistory,
             )
         } catch (e: Exception) {
+            log.error("Error occurred while applying promotion ${applyPromotionSpec.promotionUUID}", e)
             promotionHistoryService.evict(applyPromotionSpec.promotionUUID)
+            transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.FAIL)
             throw e
         }
     }
