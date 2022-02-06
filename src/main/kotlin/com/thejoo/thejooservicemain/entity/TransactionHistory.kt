@@ -15,6 +15,9 @@ class TransactionHistory(
     @Enumerated(EnumType.STRING)
     @Column
     val type: TransactionType,
+    @Enumerated(EnumType.STRING)
+    @Column
+    var status: TransactionStatus?,
     @Column
     val userId: Long,
     @Column
@@ -29,3 +32,7 @@ class TransactionHistory(
     @Column(name = "data", columnDefinition = "jsonb")
     var data: Map<String, Any>? = null,
 ): AbstractAuditableEntity()
+
+enum class TransactionStatus {
+    UNKNOWN, SUCCESS, FAIL
+}

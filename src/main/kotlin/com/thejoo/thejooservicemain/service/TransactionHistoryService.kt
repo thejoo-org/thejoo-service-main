@@ -1,6 +1,7 @@
 package com.thejoo.thejooservicemain.service
 
 import com.thejoo.thejooservicemain.entity.TransactionHistory
+import com.thejoo.thejooservicemain.entity.TransactionStatus
 import com.thejoo.thejooservicemain.entity.TransactionType
 import com.thejoo.thejooservicemain.repository.TransactionHistoryRepository
 import org.springframework.scheduling.annotation.Async
@@ -24,10 +25,21 @@ class TransactionHistoryService(
     ): Future<TransactionHistory> = TransactionHistory(
         type = type,
         userId = userId,
+        status = TransactionStatus.UNKNOWN,
         promotionId = promotionId,
         storeId = storeId,
         addedPoint = addedPoint,
         pointSnapshot = pointSnapshot,
         data = data,
     ).let(transactionHistoryRepository::save).let(::AsyncResult)
+
+    @Async
+    fun updateTransactionHistoryAsync(
+        transactionHistory: TransactionHistory,
+        status: TransactionStatus,
+    ): Future<TransactionHistory> {
+        transactionHistory.status = status
+        return transactionHistoryRepository.save(transactionHistory)
+            .let(::AsyncResult)
+    }
 }
