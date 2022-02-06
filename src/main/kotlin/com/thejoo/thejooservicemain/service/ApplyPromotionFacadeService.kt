@@ -39,7 +39,7 @@ class ApplyPromotionFacadeService(
         return try {
             promotionHistoryService.register(uuid = applyPromotionSpec.promotionUUID)
             membershipService.addPointToMembership(membership = membership, targetPromotion.point)
-            transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.SUCCESS)
+            transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.SUCCESS).get()
             ApplyPromotionResult(
                 user = targetUser,
                 membership = membership,
@@ -49,7 +49,7 @@ class ApplyPromotionFacadeService(
         } catch (e: Exception) {
             log.error("Error occurred while applying promotion ${applyPromotionSpec.promotionUUID}", e)
             promotionHistoryService.evict(applyPromotionSpec.promotionUUID)
-            transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.FAIL)
+            transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.FAIL).get()
             throw e
         }
     }
