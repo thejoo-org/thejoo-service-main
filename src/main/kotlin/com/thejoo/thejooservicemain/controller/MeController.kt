@@ -31,7 +31,6 @@ class MeController(
             .let { SimpleTokenResponse(token = it) }
 
     @Operation(
-        hidden = true,
         summary = "내 멤버쉽 리스트 조회",
         description = "내 멤버쉽 리스트 조회",
     )

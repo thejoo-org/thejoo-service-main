@@ -19,8 +19,6 @@ class TransactionHistory(
     @Column
     var status: TransactionStatus?,
     @Column
-    val userId: Long,
-    @Column
     var promotionId: Long? = null,
     @Column
     var addedPoint: Long = 0,
@@ -28,6 +26,8 @@ class TransactionHistory(
     val pointSnapshot: Long,
     @Column
     val storeId: Long,
+    @Column
+    val membershipId: Long,
     @Type(type = "jsonb")
     @Column(name = "data", columnDefinition = "jsonb")
     var data: Map<String, Any>? = null,
