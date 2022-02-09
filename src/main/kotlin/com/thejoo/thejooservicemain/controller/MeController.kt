@@ -65,5 +65,6 @@ class MeController(
             name = this.name,
             email = this.email,
             createdAt = this.createdAt,
+            updatedAt = this.updatedAt,
         )
 }
