@@ -26,23 +26,23 @@ class ApplyPromotionFacadeService(
         val targetStore = storeService.getStoreById(targetPromotion.storeId)
             .also { it.validateManageableBy(applyPromotionSpec.ownerId) }
         val targetUser = userService.getUserById(applyPromotionSpec.targetUserId)
-        val membership = membershipService.getOrRegisterMembership(targetUser, targetStore)
+        val targetMembership = membershipService.getOrRegisterMembership(targetUser, targetStore)
         val transactionHistory = transactionHistoryService.createTransactionHistoryAsync(
             type = TransactionType.APPLY,
-            userId = targetUser.id!!,
+            membershipId = targetMembership.id!!,
             promotionId = targetPromotion.id!!,
             addedPoint = targetPromotion.point,
-            pointSnapshot = membership.point + targetPromotion.point,
+            pointSnapshot = targetMembership.point + targetPromotion.point,
             storeId = targetStore.id!!,
             data = emptyMap(),
         ).get()
         return try {
             promotionHistoryService.register(uuid = applyPromotionSpec.promotionUUID)
-            membershipService.addPointToMembership(membership = membership, targetPromotion.point)
+            membershipService.addPointToMembership(membership = targetMembership, targetPromotion.point)
             transactionHistoryService.updateTransactionHistoryAsync(transactionHistory, TransactionStatus.SUCCESS).get()
             ApplyPromotionResult(
                 user = targetUser,
-                membership = membership,
+                membership = targetMembership,
                 promotion = targetPromotion,
                 transactionHistory = transactionHistory,
             )

@@ -16,7 +16,7 @@ class TransactionHistoryService(
     @Async
     fun createTransactionHistoryAsync(
         type: TransactionType,
-        userId: Long,
+        membershipId: Long,
         promotionId: Long,
         addedPoint: Long,
         pointSnapshot: Long,
@@ -24,7 +24,7 @@ class TransactionHistoryService(
         data: Map<String, Any>? = null,
     ): Future<TransactionHistory> = TransactionHistory(
         type = type,
-        userId = userId,
+        membershipId = membershipId,
         status = TransactionStatus.UNKNOWN,
         promotionId = promotionId,
         storeId = storeId,
