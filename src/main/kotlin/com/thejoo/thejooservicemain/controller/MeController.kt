@@ -3,7 +3,9 @@ package com.thejoo.thejooservicemain.controller
 import com.thejoo.thejooservicemain.config.security.nameAsLong
 import com.thejoo.thejooservicemain.controller.domain.MembershipIndexResponse
 import com.thejoo.thejooservicemain.controller.domain.SimpleTokenResponse
+import com.thejoo.thejooservicemain.controller.domain.UserProfileResponse
 import com.thejoo.thejooservicemain.entity.Membership
+import com.thejoo.thejooservicemain.entity.User
 import com.thejoo.thejooservicemain.service.JwtProviderService
 import com.thejoo.thejooservicemain.service.MembershipService
 import com.thejoo.thejooservicemain.service.UserService
@@ -22,6 +24,13 @@ class MeController(
     private val membershipService: MembershipService,
     private val jwtProviderService: JwtProviderService,
 ) {
+    @Operation(summary = "유저 기본 정보", description = "유저 기본 정보 조회")
+    @GetMapping("/profile")
+    fun getProfile(principal: Principal): UserProfileResponse =
+        principal.name
+            .let(userService::getUserById)
+            .let { it.toUserProfileResponse() }
+
     @Operation(summary = "유저 QR 토큰", description = "유저 QR 렌더링을 위한 토큰")
     @GetMapping("/tokens/for-qr")
     fun getTokenForPromotion(principal: Principal) =
@@ -48,5 +57,13 @@ class MeController(
             storeName = this.store?.name,
             point = this.point,
             joinedAt = this.createdAt,
+        )
+
+    private fun User.toUserProfileResponse() =
+        UserProfileResponse(
+            id = this.id!!,
+            name = this.name,
+            email = this.email,
+            createdAt = this.createdAt,
         )
 }
