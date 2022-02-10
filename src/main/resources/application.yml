@@ -9,6 +9,8 @@ spring:
     properties:
       hibernate:
         types.print.banner: false
+        format-sql: true
+        default_schema: thejoo_main
 
   jackson:
     property-naming-strategy: SNAKE_CASE
@@ -62,10 +64,6 @@ spring:
     password: Admin123Admin123
   jpa:
     show-sql: false
-    properties:
-      hibernate:
-        format-sql: true
-        default_schema: thejoo_main
 token:
   keystore:
     password: Admin123Admin123
@@ -84,13 +82,9 @@ spring:
     activate:
       on-profile: sandbox
   datasource:
-    url: jdbc:postgresql://thejoo-dev.csmjwfz4i4c8.ap-northeast-2.rds.amazonaws.com/thejoo
+    url: jdbc:postgresql://thejoo-sandbox.csmjwfz4i4c8.ap-northeast-2.rds.amazonaws.com/thejoo_sandbox
   jpa:
     show-sql: false
-    properties:
-      hibernate:
-        format-sql: true
-        default_schema: thejoo_main_sandbox
 token:
   properties:
     auth:
