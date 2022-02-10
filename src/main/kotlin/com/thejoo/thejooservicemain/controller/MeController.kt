@@ -3,6 +3,7 @@ package com.thejoo.thejooservicemain.controller
 import com.thejoo.thejooservicemain.config.security.nameAsLong
 import com.thejoo.thejooservicemain.controller.domain.MembershipIndexResponse
 import com.thejoo.thejooservicemain.controller.domain.SimpleTokenResponse
+import com.thejoo.thejooservicemain.controller.domain.TransactionHistoryGetResponse
 import com.thejoo.thejooservicemain.controller.domain.UserProfileResponse
 import com.thejoo.thejooservicemain.entity.Membership
 import com.thejoo.thejooservicemain.entity.User
@@ -57,6 +58,21 @@ class MeController(
             storeName = this.store?.name,
             point = this.point,
             joinedAt = this.createdAt,
+            latestApplyTransactionHistory = this.latestApplyTransactionHistory?.let {
+                TransactionHistoryGetResponse(
+                    id = it.id!!,
+                    type = it.type,
+                    status = it.status!!,
+                    promotionId = it.promotionId!!,
+                    addedPoint = it.addedPoint,
+                    pointSnapshot = it.pointSnapshot,
+                    storeId = it.storeId,
+                    membershipId = it.membershipId,
+                    data = it.data,
+                    createdAt = it.createdAt,
+                    updatedAt = it.updatedAt,
+                )
+            },
         )
 
     private fun User.toUserProfileResponse() =
