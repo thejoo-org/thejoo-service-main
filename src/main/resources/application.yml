@@ -6,6 +6,10 @@ spring:
     password: ${MAIN_SERVICE_DATABASE_PASSWORD}
   jpa:
     open-in-view: false
+    properties:
+      hibernate:
+        types.print.banner: false
+
   jackson:
     property-naming-strategy: SNAKE_CASE
 server:
