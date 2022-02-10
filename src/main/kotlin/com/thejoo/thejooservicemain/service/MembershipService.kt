@@ -5,8 +5,11 @@ import com.thejoo.thejooservicemain.entity.Store
 import com.thejoo.thejooservicemain.entity.User
 import com.thejoo.thejooservicemain.repository.MembershipRepository
 import org.slf4j.LoggerFactory
+import org.springframework.scheduling.annotation.Async
+import org.springframework.scheduling.annotation.AsyncResult
 import org.springframework.stereotype.Service
 import java.util.*
+import java.util.concurrent.Future
 import javax.transaction.Transactional
 
 @Service
@@ -25,6 +28,15 @@ class MembershipService(
                 log.info("Membership NOT found for user = $user...")
                 registerMembershipForUser(user, store)
             }
+
+    @Async
+    @Transactional
+    fun getOrRegisterMembershipAsync(user: User, store: Store): Future<Membership> =
+        getMaybeMembershipByUserAndStore(user, store)
+            .orElseGet {
+                log.info("Membership NOT found for user = $user...")
+                registerMembershipForUser(user, store)
+            }.let(::AsyncResult)
 
     fun getMembershipsForUser(user: User): List<Membership> =
         membershipRepository.findAllEntityGraphByUserId(user.id!!)
