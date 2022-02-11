@@ -3,6 +3,7 @@ package com.thejoo.thejooservicemain.service
 import com.thejoo.thejooservicemain.entity.Membership
 import com.thejoo.thejooservicemain.entity.Store
 import com.thejoo.thejooservicemain.entity.User
+import com.thejoo.thejooservicemain.infrastructure.advice.TheJooException
 import com.thejoo.thejooservicemain.repository.MembershipRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Async
@@ -40,6 +41,14 @@ class MembershipService(
 
     fun getMembershipsForUser(user: User): List<Membership> =
         membershipRepository.findAllEntityGraphByUserId(user.id!!)
+
+    fun getMembershipByIdForUser(id: Long, user: User): Membership =
+        membershipRepository.findOneEntityGraphById(id)
+            .also {
+                if (it.get().userId != user.id)
+                    throw TheJooException.ofBadRequest(errorMessage = "Membership id = $id is NOT for requested user")
+            }
+            .orElseThrow { TheJooException.ofEntityNotFound("Membership NOT found for id = $id") }
 
     fun registerMembershipForUser(user: User, store: Store): Membership =
         save(Membership(userId = user.id!!, storeId = store.id!!))

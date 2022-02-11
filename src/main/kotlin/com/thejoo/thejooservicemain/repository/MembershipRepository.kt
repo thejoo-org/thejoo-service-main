@@ -12,4 +12,7 @@ interface MembershipRepository: JpaRepository<Membership, Long> {
 
     @EntityGraph(attributePaths = ["store"])
     fun findAllEntityGraphByUserId(userId: Long): List<Membership>
+
+    @EntityGraph(attributePaths = ["store"])
+    fun findOneEntityGraphById(id: Long): Optional<Membership>
 }
