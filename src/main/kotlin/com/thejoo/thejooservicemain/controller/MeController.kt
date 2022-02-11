@@ -1,18 +1,17 @@
 package com.thejoo.thejooservicemain.controller
 
 import com.thejoo.thejooservicemain.config.security.nameAsLong
-import com.thejoo.thejooservicemain.controller.domain.MembershipIndexResponse
-import com.thejoo.thejooservicemain.controller.domain.SimpleTokenResponse
-import com.thejoo.thejooservicemain.controller.domain.TransactionHistoryGetResponse
-import com.thejoo.thejooservicemain.controller.domain.UserProfileResponse
+import com.thejoo.thejooservicemain.controller.domain.*
 import com.thejoo.thejooservicemain.entity.Membership
 import com.thejoo.thejooservicemain.entity.User
 import com.thejoo.thejooservicemain.service.JwtProviderService
 import com.thejoo.thejooservicemain.service.MembershipService
 import com.thejoo.thejooservicemain.service.UserService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
@@ -28,9 +27,7 @@ class MeController(
     @Operation(summary = "유저 기본 정보", description = "유저 기본 정보 조회")
     @GetMapping("/profile")
     fun getProfile(principal: Principal): UserProfileResponse =
-        principal.name
-            .let(userService::getUserById)
-            .let { it.toUserProfileResponse() }
+        principal.name.let(userService::getUserById).toUserProfileResponse()
 
     @Operation(summary = "유저 QR 토큰", description = "유저 QR 렌더링을 위한 토큰")
     @GetMapping("/tokens/for-qr")
@@ -50,6 +47,18 @@ class MeController(
             .let(membershipService::getMembershipsForUser)
             .map { it.toMembershipIndexResponse() }
 
+    @Operation(
+        summary = "내 멤버쉽 상세 조회",
+        description = "내 멤버쉽 상세 조회",
+    )
+    @GetMapping("/memberships/{membership_id}")
+    fun getMembership(
+        principal: Principal,
+        @Parameter(description = "멤버쉽 ID") @PathVariable("membership_id") membershipId: Long
+    ) =
+        userService.getUserById(principal.nameAsLong())
+            .let { membershipService.getMembershipByIdForUser(membershipId, it) }.toMembershipGetResponse()
+
     private fun Membership.toMembershipIndexResponse() =
         MembershipIndexResponse(
             id = this.id!!,
@@ -57,7 +66,28 @@ class MeController(
             storeId = this.storeId,
             storeName = this.store?.name,
             point = this.point,
-            joinedAt = this.createdAt,
+            createdAt = this.createdAt,
+            updatedAt = this.updatedAt,
+        )
+
+    private fun Membership.toMembershipGetResponse() =
+        MembershipGetResponse(
+            id = this.id!!,
+            userId = this.userId,
+            storeId = this.storeId,
+            store = this.store?.let {
+                StoreGetResponse(
+                    id = it.id!!,
+                    ownerId = it.ownerId,
+                    name = it.name,
+                    email = it.email,
+                    createdAt = it.createdAt,
+                    updatedAt = it.updatedAt,
+                )
+            },
+            point = this.point,
+            createdAt = this.createdAt,
+            updatedAt = this.updatedAt,
             latestApplyTransactionHistory = this.latestApplyTransactionHistory?.let {
                 TransactionHistoryGetResponse(
                     id = it.id!!,
