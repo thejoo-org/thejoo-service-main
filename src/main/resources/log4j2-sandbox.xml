@@ -22,7 +22,7 @@
             <DefaultRolloverStrategy max="5" fileIndex="min" />
         </RollingFile>
         <RollingFile name="errorFile" fileName="${logPath}/${errorLogFileName}.log" filePattern="${logPath}/${errorLogFileName}-%d{yyyy-MM-dd}.log">
-            <PatternLayout pattern="errorFileLayout" alwaysWriteExceptions="false" />
+            <PatternLayout pattern="${errorFileLayout}" alwaysWriteExceptions="false" />
             <Policies>
                 <OnStartupTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="5 MB" />
