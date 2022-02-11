@@ -16,6 +16,7 @@ class JwtConfig(
 ) {
     private val keyStore: KeyStore = KeyStore.getInstance(tokenKeyStoreProperties.type)
     init {
+
         val keyStoreInputStream = ClassPathResource(tokenKeyStoreProperties.filename).inputStream
         keyStore.load(keyStoreInputStream, tokenKeyStoreProperties.password.toCharArray())
     }
