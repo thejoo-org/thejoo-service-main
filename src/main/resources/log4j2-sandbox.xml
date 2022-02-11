@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+    <Properties>
+        <Property name="applicationLogFileName">application</Property>
+        <Property name="errorLogFileName">error</Property>
+        <Property name="requestLogFileName">json</Property>
+        <Property name="fileLayout">%d %-5level [%t] %c(%M:%L) - %m%n</Property>
+        <Property name="errorFileLayout">%d %-5level [%t] %c(%M:%L) - %m%n%throwable</Property>
+        <Property name="stdOutLayout">%d{ISO8601} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}(%M:%L): %msg%n%throwable</Property>
+        <Property name="logPath">${env:LOG_PATH:-~/logs}</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="applicationFile" fileName="${logPath}/${applicationLogFileName}.log" filePattern="${logPath}/${applicationLogFileName}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${fileLayout}" />
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="20 MB" />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min" />
+        </RollingFile>
+        <RollingFile name="errorFile" fileName="${logPath}/${errorLogFileName}.log" filePattern="${logPath}/${errorLogFileName}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${errorFileLayout}" alwaysWriteExceptions="false" />
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="5 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min" />
+        </RollingFile>
+        <RollingFile name="requestFile" fileName="${logPath}/${requestLogFileName}.log" filePattern="${logPath}/${requestLogFileName}-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="${fileLayout}" />
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="5 MB" />
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="5" fileIndex="min" />
+        </RollingFile>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="${stdOutLayout}" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="error">
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="errorFile" />
+        </Root>
+
+        <Logger name="org.springframework" level="info" additivity="false" >
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="applicationFile" />
+        </Logger>
+
+        <Logger name="com.thejoo.thejooservicemain.infrastructure.filter.CustomRequestLoggingFilter" level="debug" additivity="true">
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="requestFile" />
+        </Logger>
+
+        <Logger name="com.thejoo.thejooservicemain" level="info" additivity="true" >
+            <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="applicationFile" />
+        </Logger>
+    </Loggers>
+</Configuration>

@@ -1,6 +1,5 @@
 package com.thejoo.thejooservicemain.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -12,8 +11,8 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 class JacksonConfig {
     @Bean
-    fun modelResolver(objectMapper: ObjectMapper): ModelResolver {
-        val objectMapper = jacksonObjectMapper().registerModule(
+    fun modelResolver(): ModelResolver =
+        jacksonObjectMapper().registerModule(
             KotlinModule.Builder()
                 .withReflectionCacheSize(512)
                 .configure(KotlinFeature.NullToEmptyCollection, false)
@@ -21,10 +20,7 @@ class JacksonConfig {
                 .configure(KotlinFeature.NullIsSameAsDefault, false)
                 .configure(KotlinFeature.SingletonSupport, false)
                 .configure(KotlinFeature.StrictNullChecks, false)
-                .build()
-        ).setPropertyNamingStrategy(
-            PropertyNamingStrategies.SNAKE_CASE
-        )
-        return ModelResolver(objectMapper)
-    }
+                .build())
+            .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
+            .let(::ModelResolver)
 }

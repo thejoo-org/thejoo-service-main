@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+
+    <Properties>
+        <Property name="stdOutLayout">%d{ISO8601} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}(%M:%L): %msg%n%throwable</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="${stdOutLayout}" />
+        </Console>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="STDOUT" />
+        </Root>
+
+        <Logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+
+        <Logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+            <AppenderRef ref="STDOUT" />
+        </Logger>
+    </Loggers>
+</Configuration>

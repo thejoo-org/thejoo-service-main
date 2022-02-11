@@ -6,12 +6,14 @@ spring:
     password: ${MAIN_SERVICE_DATABASE_PASSWORD}
   jpa:
     open-in-view: false
+    show-sql: false
     properties:
       hibernate:
         types.print.banner: false
+        show-sql: false
         format-sql: true
+        user_sql_comments: true
         default_schema: thejoo_main
-
   jackson:
     property-naming-strategy: SNAKE_CASE
 server:
@@ -27,8 +29,6 @@ springdoc:
     disable-swagger-default-url: true
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
-logging.level:
-    org.hibernate.SQL: DEBUG
 token:
   default-issuer: ${spring.application.name}-${spring.profiles.active}
   default-audience: ${spring.application.name}-${spring.profiles.active}
@@ -51,6 +51,8 @@ token:
       alias: thejoo-promotion-leaf
       password: ${token.keystore.password}
       audience: ${token.default-audience}
+logging:
+  config: classpath:log4j2-${spring.profiles.active}.xml
 
 ---
 
@@ -62,8 +64,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/thejoo_dev
     username: thejoo_dev_admin
     password: Admin123Admin123
-  jpa:
-    show-sql: false
 token:
   keystore:
     password: Admin123Admin123
@@ -83,8 +83,6 @@ spring:
       on-profile: sandbox
   datasource:
     url: jdbc:postgresql://thejoo-sandbox.csmjwfz4i4c8.ap-northeast-2.rds.amazonaws.com/thejoo_sandbox
-  jpa:
-    show-sql: false
 token:
   properties:
     auth:
