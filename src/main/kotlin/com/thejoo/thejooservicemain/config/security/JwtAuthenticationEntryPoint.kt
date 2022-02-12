@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
-class JwtAuthenticationEntryPoint: AuthenticationEntryPoint {
+class JwtAuthenticationEntryPoint : AuthenticationEntryPoint {
     private val log = LoggerFactory.getLogger(JwtAuthenticationEntryPoint::class.java)
     private val objectMapper = ObjectMapper()
         .also { it.factory.configure(JsonWriteFeature.ESCAPE_NON_ASCII.mappedFeature(), true) }

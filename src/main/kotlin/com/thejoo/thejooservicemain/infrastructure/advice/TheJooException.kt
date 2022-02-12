@@ -6,7 +6,7 @@ data class TheJooException(
     var statusCode: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
     val errorCode: ExceptionCode,
     var errorMessage: String?,
-): RuntimeException("[$errorCode] $errorMessage") {
+) : RuntimeException("[$errorCode] $errorMessage") {
     val statusCodeValue: Int = statusCode.value()
 
     fun toResponseBody() = TheJooExceptionResponse(

@@ -6,6 +6,8 @@ import com.thejoo.thejooservicemain.entity.User
 import com.thejoo.thejooservicemain.infrastructure.advice.TheJooException
 import com.thejoo.thejooservicemain.repository.MembershipRepository
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.AsyncResult
 import org.springframework.stereotype.Service
@@ -39,11 +41,19 @@ class MembershipService(
                 registerMembershipForUser(user, store)
             }.let(::AsyncResult)
 
-    fun getMembershipsForUser(user: User): List<Membership> =
-        membershipRepository.findAllEntityGraphByUserId(user.id!!)
+    fun getMembershipsForUser(user: User, pageable: Pageable): Page<Membership> =
+        membershipRepository.findAllEntityGraphByUserId(user.id!!, pageable)
+
+    fun getMembershipWithEntityGraphByIdForUser(id: Long, user: User): Membership =
+        membershipRepository.findOneEntityGraphById(id)
+            .also {
+                if (it.get().userId != user.id)
+                    throw TheJooException.ofBadRequest(errorMessage = "Membership id = $id is NOT for requested user")
+            }
+            .orElseThrow { TheJooException.ofEntityNotFound("Membership NOT found for id = $id") }
 
     fun getMembershipByIdForUser(id: Long, user: User): Membership =
-        membershipRepository.findOneEntityGraphById(id)
+        membershipRepository.findById(id)
             .also {
                 if (it.get().userId != user.id)
                     throw TheJooException.ofBadRequest(errorMessage = "Membership id = $id is NOT for requested user")

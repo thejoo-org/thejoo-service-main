@@ -2,7 +2,6 @@ package com.thejoo.thejooservicemain.controller
 
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.Claim
-import com.auth0.jwt.interfaces.DecodedJWT
 import com.thejoo.thejooservicemain.config.security.nameAsLong
 import com.thejoo.thejooservicemain.config.security.subjectAsLong
 import com.thejoo.thejooservicemain.config.token.TokenConstants
@@ -18,7 +17,6 @@ import com.thejoo.thejooservicemain.service.domain.ApplyPromotionSpec
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.slf4j.LoggerFactory
-import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
@@ -79,11 +77,11 @@ class PromotionController(
     }
 
     private fun ApplyPromotionResult.toResponse() = ApplyPromotionResponse(
-        userId = this.user.id!!,
-        membershipId = this.membership.id!!,
-        transactionHistoryId = this.transactionHistory.id!!,
-        addedPoint = this.promotion.point,
-        currentPoint = this.membership.point,
-        isNewlyRegistered = this.membership.isNewlyRegistered,
+        userId = user.id!!,
+        membershipId = membership.id!!,
+        transactionHistoryId = transactionHistory.id!!,
+        addedPoint = promotion.point,
+        currentPoint = membership.point,
+        isNewlyRegistered = membership.isNewlyRegistered,
     )
 }

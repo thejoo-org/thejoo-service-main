@@ -3,7 +3,7 @@ package com.thejoo.thejooservicemain.infrastructure.filter
 import org.springframework.web.filter.CommonsRequestLoggingFilter
 import javax.servlet.http.HttpServletRequest
 
-class CustomRequestLoggingFilter: CommonsRequestLoggingFilter() {
+class CustomRequestLoggingFilter : CommonsRequestLoggingFilter() {
     init {
         isIncludeHeaders = true
         isIncludeQueryString = true

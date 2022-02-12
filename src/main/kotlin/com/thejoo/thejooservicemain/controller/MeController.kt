@@ -3,13 +3,17 @@ package com.thejoo.thejooservicemain.controller
 import com.thejoo.thejooservicemain.config.security.nameAsLong
 import com.thejoo.thejooservicemain.controller.domain.*
 import com.thejoo.thejooservicemain.entity.Membership
+import com.thejoo.thejooservicemain.entity.TransactionHistory
 import com.thejoo.thejooservicemain.entity.User
 import com.thejoo.thejooservicemain.service.JwtProviderService
 import com.thejoo.thejooservicemain.service.MembershipService
+import com.thejoo.thejooservicemain.service.TransactionHistoryService
 import com.thejoo.thejooservicemain.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -23,6 +27,7 @@ class MeController(
     private val userService: UserService,
     private val membershipService: MembershipService,
     private val jwtProviderService: JwtProviderService,
+    private val transactionHistoryService: TransactionHistoryService,
 ) {
     @Operation(summary = "유저 기본 정보", description = "유저 기본 정보 조회")
     @GetMapping("/profile")
@@ -42,9 +47,9 @@ class MeController(
         description = "내 멤버쉽 리스트 조회",
     )
     @GetMapping("/memberships")
-    fun getMemberships(principal: Principal): List<MembershipIndexResponse> =
+    fun getMemberships(principal: Principal, pageable: Pageable): Page<MembershipIndexResponse> =
         userService.getUserById(principal.nameAsLong())
-            .let(membershipService::getMembershipsForUser)
+            .let { membershipService.getMembershipsForUser(user = it, pageable = pageable) }
             .map { it.toMembershipIndexResponse() }
 
     @Operation(
@@ -55,27 +60,45 @@ class MeController(
     fun getMembership(
         principal: Principal,
         @Parameter(description = "멤버쉽 ID") @PathVariable("membership_id") membershipId: Long
-    ) =
-        userService.getUserById(principal.nameAsLong())
-            .let { membershipService.getMembershipByIdForUser(membershipId, it) }.toMembershipGetResponse()
+    ): MembershipGetResponse {
+        return userService.getUserById(principal.nameAsLong())
+            .let { user -> membershipService.getMembershipWithEntityGraphByIdForUser(membershipId, user) }
+            .toMembershipGetResponse()
+    }
+
+    @Operation(
+        summary = "내 멤버쉽 거래 내역 리스트 조회",
+        description = "내 멤버쉽 거래 내역 리스트 조회",
+    )
+    @GetMapping("/memberships/{membership_id}/transaction-histories")
+    fun getMembershipTransactionHistories(
+        principal: Principal,
+        @Parameter(description = "멤버쉽 ID") @PathVariable("membership_id") membershipId: Long,
+        pageable: Pageable,
+    ): Page<TransactionHistoryGetResponse> {
+        return userService.getUserById(principal.nameAsLong())
+            .let { membershipService.getMembershipByIdForUser(id = membershipId, user = it) }
+            .let { membership -> transactionHistoryService.getTransactionHistoriesForMembership(membership, pageable) }
+            .map { it.toTransactionHistoryGetResponse() }
+    }
 
     private fun Membership.toMembershipIndexResponse() =
         MembershipIndexResponse(
-            id = this.id!!,
-            userId = this.userId,
-            storeId = this.storeId,
-            storeName = this.store?.name,
-            point = this.point,
-            createdAt = this.createdAt,
-            updatedAt = this.updatedAt,
+            id = id!!,
+            userId = userId,
+            storeId = storeId,
+            storeName = store?.name,
+            point = point,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
         )
 
     private fun Membership.toMembershipGetResponse() =
         MembershipGetResponse(
-            id = this.id!!,
-            userId = this.userId,
-            storeId = this.storeId,
-            store = this.store?.let {
+            id = id!!,
+            userId = userId,
+            storeId = storeId,
+            store = store?.let {
                 StoreGetResponse(
                     id = it.id!!,
                     ownerId = it.ownerId,
@@ -85,32 +108,33 @@ class MeController(
                     updatedAt = it.updatedAt,
                 )
             },
-            point = this.point,
-            createdAt = this.createdAt,
-            updatedAt = this.updatedAt,
-            latestApplyTransactionHistory = this.latestApplyTransactionHistory?.let {
-                TransactionHistoryGetResponse(
-                    id = it.id!!,
-                    type = it.type,
-                    status = it.status!!,
-                    promotionId = it.promotionId!!,
-                    addedPoint = it.addedPoint,
-                    pointSnapshot = it.pointSnapshot,
-                    storeId = it.storeId,
-                    membershipId = it.membershipId,
-                    data = it.data,
-                    createdAt = it.createdAt,
-                    updatedAt = it.updatedAt,
-                )
-            },
+            point = point,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
+            latestApplyTransactionHistory = latestApplyTransactionHistory?.toTransactionHistoryGetResponse(),
+        )
+
+    private fun TransactionHistory.toTransactionHistoryGetResponse() =
+        TransactionHistoryGetResponse(
+            id = id!!,
+            type = type,
+            status = status!!,
+            promotionId = promotionId!!,
+            addedPoint = addedPoint,
+            pointSnapshot = pointSnapshot,
+            storeId = storeId,
+            membershipId = membershipId,
+            data = data,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
         )
 
     private fun User.toUserProfileResponse() =
         UserProfileResponse(
-            id = this.id!!,
-            name = this.name,
-            email = this.email,
-            createdAt = this.createdAt,
-            updatedAt = this.updatedAt,
+            id = id!!,
+            name = name,
+            email = email,
+            createdAt = createdAt,
+            updatedAt = updatedAt,
         )
 }

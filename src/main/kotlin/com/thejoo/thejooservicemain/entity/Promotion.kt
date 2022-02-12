@@ -16,7 +16,7 @@ class Promotion(
     val title: String,
     @Column
     val description: String,
-): AbstractAuditableEntity() {
+) : AbstractAuditableEntity() {
 
     override fun toString(): String =
         "Promotion(id=$id, storeId=$storeId, point=$point, title='$title', description='$description')"

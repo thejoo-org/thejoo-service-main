@@ -19,18 +19,20 @@ class Membership(
     @JoinColumn(name = "store_id", insertable = false, updatable = false)
     var store: Store? = null,
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinFormula("(" +
+    @JoinFormula(
+        "(" +
             "SELECT tx.id " +
             "FROM {h-schema}transaction_histories tx " +
             "WHERE tx.membership_id = id AND tx.status = 'SUCCESS' AND tx.type = 'APPLY' " +
             "ORDER BY created_at DESC " +
             "LIMIT 1" +
-            ")")
+            ")"
+    )
     var latestApplyTransactionHistory: TransactionHistory? = null,
     @Transient
     val isNewlyRegistered: Boolean = false,
-): AbstractAuditableEntity() {
-    constructor(userId: Long, storeId: Long): this(
+) : AbstractAuditableEntity() {
+    constructor(userId: Long, storeId: Long) : this(
         userId = userId,
         storeId = storeId,
         point = 0,
@@ -38,7 +40,7 @@ class Membership(
     )
 
     fun addPoint(pointToAdd: Long): Membership {
-        this.point += pointToAdd
+        point += pointToAdd
         return this
     }
 

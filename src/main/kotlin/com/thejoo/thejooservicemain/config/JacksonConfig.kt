@@ -20,7 +20,8 @@ class JacksonConfig {
                 .configure(KotlinFeature.NullIsSameAsDefault, false)
                 .configure(KotlinFeature.SingletonSupport, false)
                 .configure(KotlinFeature.StrictNullChecks, false)
-                .build())
+                .build()
+        )
             .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
             .let(::ModelResolver)
 }

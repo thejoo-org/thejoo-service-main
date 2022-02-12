@@ -22,7 +22,7 @@ class User(
     @Type(type = "jsonb")
     @Column(name = "roles", columnDefinition = "jsonb")
     val roles: List<String> = listOf(),
-): AbstractAuditableEntity(), UserDetails {
+) : AbstractAuditableEntity(), UserDetails {
     constructor(id: Long, roles: List<Role>) : this(id = id, roles = roles.map(Role::name), name = "", email = "")
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =

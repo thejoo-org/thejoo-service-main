@@ -1,9 +1,11 @@
 package com.thejoo.thejooservicemain.service
 
+import com.thejoo.thejooservicemain.entity.Membership
 import com.thejoo.thejooservicemain.entity.TransactionHistory
 import com.thejoo.thejooservicemain.entity.TransactionStatus
 import com.thejoo.thejooservicemain.entity.TransactionType
 import com.thejoo.thejooservicemain.repository.TransactionHistoryRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.AsyncResult
 import org.springframework.stereotype.Service
@@ -42,4 +44,10 @@ class TransactionHistoryService(
         return transactionHistoryRepository.save(transactionHistory)
             .let(::AsyncResult)
     }
+
+    fun getTransactionHistoriesForMembership(membership: Membership, pageable: Pageable) =
+        transactionHistoryRepository.findByMembershipIdOrderByCreatedAtDesc(
+            membershipId = membership.id!!,
+            pageable = pageable,
+        )
 }

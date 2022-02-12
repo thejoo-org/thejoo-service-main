@@ -4,4 +4,4 @@ import com.thejoo.thejooservicemain.entity.Store
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface StoreRepository: JpaRepository<Store, Long>
+interface StoreRepository : JpaRepository<Store, Long>
