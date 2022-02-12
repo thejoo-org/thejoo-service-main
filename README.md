@@ -61,6 +61,7 @@ OS:           Mac OS X 11.5 x86_64
 DB 주소: thejoo-sandbox.csmjwfz4i4c8.ap-northeast-2.rds.amazonaws.com
 비밀번호: 관리자에게 문의
 IMPORTANT: DB 서버 Inbound ACL이 막혀있으므로 관리자에게 접속하려는 PC의 IP 주소를 제공하여야함
+
 <img src="doc/images/rds_1.png" width="500"> <img src="doc/images/rds_2.png" width="500"> <img src="doc/images/rds_3.png" width="500">
 
 ### 실행 가이드
