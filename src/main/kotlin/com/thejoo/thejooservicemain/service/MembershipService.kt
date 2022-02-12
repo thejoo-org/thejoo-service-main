@@ -42,8 +42,16 @@ class MembershipService(
     fun getMembershipsForUser(user: User): List<Membership> =
         membershipRepository.findAllEntityGraphByUserId(user.id!!)
 
-    fun getMembershipByIdForUser(id: Long, user: User): Membership =
+    fun getMembershipWithEntityGraphByIdForUser(id: Long, user: User): Membership =
         membershipRepository.findOneEntityGraphById(id)
+            .also {
+                if (it.get().userId != user.id)
+                    throw TheJooException.ofBadRequest(errorMessage = "Membership id = $id is NOT for requested user")
+            }
+            .orElseThrow { TheJooException.ofEntityNotFound("Membership NOT found for id = $id") }
+
+    fun getMembershipByIdForUser(id: Long, user: User): Membership =
+        membershipRepository.findById(id)
             .also {
                 if (it.get().userId != user.id)
                     throw TheJooException.ofBadRequest(errorMessage = "Membership id = $id is NOT for requested user")

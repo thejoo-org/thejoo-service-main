@@ -30,6 +30,5 @@ class JwtFilter(
         }
     }
 
-    private fun HttpServletRequest.getJwt(): String =
-        this.getHeader(HttpHeaders.AUTHORIZATION)!!.replaceFirst("Bearer ", "")
+    private fun HttpServletRequest.getJwt(): String = getHeader(HttpHeaders.AUTHORIZATION)!!.replaceFirst("Bearer ", "")
 }

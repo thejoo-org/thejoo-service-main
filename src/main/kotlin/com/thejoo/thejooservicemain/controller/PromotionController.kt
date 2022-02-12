@@ -79,11 +79,11 @@ class PromotionController(
     }
 
     private fun ApplyPromotionResult.toResponse() = ApplyPromotionResponse(
-        userId = this.user.id!!,
-        membershipId = this.membership.id!!,
-        transactionHistoryId = this.transactionHistory.id!!,
-        addedPoint = this.promotion.point,
-        currentPoint = this.membership.point,
-        isNewlyRegistered = this.membership.isNewlyRegistered,
+        userId = user.id!!,
+        membershipId = membership.id!!,
+        transactionHistoryId = transactionHistory.id!!,
+        addedPoint = promotion.point,
+        currentPoint = membership.point,
+        isNewlyRegistered = membership.isNewlyRegistered,
     )
 }

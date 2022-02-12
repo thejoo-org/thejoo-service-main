@@ -38,7 +38,7 @@ class Membership(
     )
 
     fun addPoint(pointToAdd: Long): Membership {
-        this.point += pointToAdd
+        point += pointToAdd
         return this
     }
 
