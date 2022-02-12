@@ -47,9 +47,9 @@ class MeController(
         description = "내 멤버쉽 리스트 조회",
     )
     @GetMapping("/memberships")
-    fun getMemberships(principal: Principal): List<MembershipIndexResponse> =
+    fun getMemberships(principal: Principal, pageable: Pageable): Page<MembershipIndexResponse> =
         userService.getUserById(principal.nameAsLong())
-            .let(membershipService::getMembershipsForUser)
+            .let { membershipService.getMembershipsForUser(user = it, pageable = pageable) }
             .map { it.toMembershipIndexResponse() }
 
     @Operation(
