@@ -11,7 +11,7 @@ import java.util.*
 @Service
 class UserService(
     private val userRepository: UserRepository
-): UserDetailsService {
+) : UserDetailsService {
     fun getAllUsers(): List<User> = userRepository.findAll()
     fun getMaybeUserById(id: Long): Optional<User> = userRepository.findById(id)
     fun getUserById(id: Long): User = getMaybeUserById(id)

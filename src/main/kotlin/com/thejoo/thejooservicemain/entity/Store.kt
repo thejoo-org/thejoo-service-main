@@ -16,7 +16,7 @@ class Store(
     val name: String,
     @Column
     var email: String? = null,
-): AbstractAuditableEntity() {
+) : AbstractAuditableEntity() {
     fun validateManageableBy(userId: Long) {
         if (isManageableBy(userId))
             throw TheJooException.ofBadRequest(ExceptionCode.STORE_OWNER_MISMATCH)

@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface MembershipRepository: JpaRepository<Membership, Long> {
+interface MembershipRepository : JpaRepository<Membership, Long> {
     fun findByUserIdAndStoreId(userId: Long, storeId: Long): Optional<Membership>
 
     @EntityGraph(attributePaths = ["store"])

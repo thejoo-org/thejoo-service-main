@@ -62,7 +62,8 @@ class MeController(
         @Parameter(description = "멤버쉽 ID") @PathVariable("membership_id") membershipId: Long
     ): MembershipGetResponse {
         return userService.getUserById(principal.nameAsLong())
-            .let { membershipService.getMembershipWithEntityGraphByIdForUser(membershipId, it) }.toMembershipGetResponse()
+            .let { user -> membershipService.getMembershipWithEntityGraphByIdForUser(membershipId, user) }
+            .toMembershipGetResponse()
     }
 
     @Operation(
@@ -77,7 +78,7 @@ class MeController(
     ): Page<TransactionHistoryGetResponse> {
         return userService.getUserById(principal.nameAsLong())
             .let { membershipService.getMembershipByIdForUser(id = membershipId, user = it) }
-            .let { transactionHistoryService.getTransactionHistoriesForMembership(membership = it, pageable = pageable) }
+            .let { membership -> transactionHistoryService.getTransactionHistoriesForMembership(membership, pageable) }
             .map { it.toTransactionHistoryGetResponse() }
     }
 

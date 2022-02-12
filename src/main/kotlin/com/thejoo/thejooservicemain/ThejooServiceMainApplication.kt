@@ -13,5 +13,5 @@ import org.springframework.scheduling.annotation.EnableScheduling
 class ThejooServiceMainApplication
 
 fun main(args: Array<String>) {
-	runApplication<ThejooServiceMainApplication>(*args)
+    runApplication<ThejooServiceMainApplication>(*args)
 }

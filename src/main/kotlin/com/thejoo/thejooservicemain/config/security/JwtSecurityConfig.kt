@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 @Component
 class JwtSecurityConfig(
     private val jwtFilter: JwtFilter,
-): SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
+) : SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
         super.configure(httpSecurity)

@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse
 @Component
 class JwtFilter(
     private val jwtVerifierService: JwtVerifierService,
-): OncePerRequestFilter() {
+) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -22,8 +22,9 @@ class JwtFilter(
     ) {
         try {
             val jwt = request.getJwt()
-            SecurityContextHolder.getContext().authentication = jwtVerifierService.verifyAndBuildUserFromAuthToken(token = jwt)
-                .let { UsernamePasswordAuthenticationToken(it, jwt, it.authorities) }
+            SecurityContextHolder.getContext().authentication =
+                jwtVerifierService.verifyAndBuildUserFromAuthToken(token = jwt)
+                    .let { UsernamePasswordAuthenticationToken(it, jwt, it.authorities) }
             filterChain.doFilter(request, response)
         } catch (e: Exception) {
             filterChain.doFilter(request, response)

@@ -31,7 +31,7 @@ class TransactionHistory(
     @Type(type = "jsonb")
     @Column(name = "data", columnDefinition = "jsonb")
     var data: Map<String, Any>? = null,
-): AbstractAuditableEntity()
+) : AbstractAuditableEntity()
 
 enum class TransactionStatus {
     UNKNOWN, SUCCESS, FAIL

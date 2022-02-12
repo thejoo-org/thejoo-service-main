@@ -14,12 +14,12 @@ abstract class TokenProperties {
 
 @Component
 @ConfigurationProperties(prefix = "token.properties.auth")
-class AuthTokenProperties: TokenProperties()
+class AuthTokenProperties : TokenProperties()
 
 @Component
 @ConfigurationProperties(prefix = "token.properties.user-read")
-class UserReadTokenProperties: TokenProperties()
+class UserReadTokenProperties : TokenProperties()
 
 @Component
 @ConfigurationProperties(prefix = "token.properties.promotion")
-class PromotionTokenProperties: TokenProperties()
+class PromotionTokenProperties : TokenProperties()
