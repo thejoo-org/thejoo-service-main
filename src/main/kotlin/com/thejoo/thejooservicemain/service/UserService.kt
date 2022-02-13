@@ -3,6 +3,7 @@ package com.thejoo.thejooservicemain.service
 import com.thejoo.thejooservicemain.entity.User
 import com.thejoo.thejooservicemain.infrastructure.advice.TheJooException
 import com.thejoo.thejooservicemain.repository.UserRepository
+import org.springframework.data.domain.Pageable
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
@@ -13,6 +14,7 @@ class UserService(
     private val userRepository: UserRepository
 ) : UserDetailsService {
     fun getAllUsers(): List<User> = userRepository.findAll()
+    fun getAllUsersWithPage(pageable: Pageable) = userRepository.findAll(pageable)
     fun getMaybeUserById(id: Long): Optional<User> = userRepository.findById(id)
     fun getUserById(id: Long): User = getMaybeUserById(id)
         .orElseThrow { TheJooException.ofEntityNotFound("User NOT found for id = $id") }

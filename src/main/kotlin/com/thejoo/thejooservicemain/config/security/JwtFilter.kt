@@ -1,5 +1,6 @@
 package com.thejoo.thejooservicemain.config.security
 
+import com.thejoo.thejooservicemain.config.AuthTokenType
 import com.thejoo.thejooservicemain.service.JwtVerifierService
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -22,14 +23,21 @@ class JwtFilter(
     ) {
         try {
             val jwt = request.getJwt()
+            val authTokenType = jwtVerifierService.decodeAuthTypeFromAuthToken(token = jwt)
             SecurityContextHolder.getContext().authentication =
-                jwtVerifierService.verifyAndBuildUserFromAuthToken(token = jwt)
+                deriveJwtVerifierFunction(authTokenType).call(jwt)
                     .let { UsernamePasswordAuthenticationToken(it, jwt, it.authorities) }
             filterChain.doFilter(request, response)
         } catch (e: Exception) {
             filterChain.doFilter(request, response)
         }
     }
+
+    private fun deriveJwtVerifierFunction(authTokenType: AuthTokenType) =
+        when (authTokenType) {
+            AuthTokenType.COMMON -> jwtVerifierService::verifyAndBuildUserFromAuthToken
+            AuthTokenType.ADMIN -> jwtVerifierService::verifyAndBuildAdminUserFromAuthToken
+        }
 
     private fun HttpServletRequest.getJwt(): String = getHeader(HttpHeaders.AUTHORIZATION)!!.replaceFirst("Bearer ", "")
 }

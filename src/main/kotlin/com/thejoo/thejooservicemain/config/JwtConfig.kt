@@ -16,14 +16,13 @@ class JwtConfig(
 ) {
     private val keyStore: KeyStore = KeyStore.getInstance(tokenKeyStoreProperties.type)
     init {
-
         val keyStoreInputStream = ClassPathResource(tokenKeyStoreProperties.filename).inputStream
         keyStore.load(keyStoreInputStream, tokenKeyStoreProperties.password.toCharArray())
     }
 
     @Bean("authTokenConfig")
     fun authTokenConfig(authTokenProperties: AuthTokenProperties) =
-        TokenConfig(authTokenProperties, keyStore)
+        AuthTokenConfig(AuthTokenType.COMMON, authTokenProperties, keyStore)
 
     @Bean("userReadTokenConfig")
     fun userReadTokenConfig(userReadTokenProperties: UserReadTokenProperties) =
@@ -32,9 +31,16 @@ class JwtConfig(
     @Bean("promotionTokenConfig")
     fun promotionTokenConfig(promotionTokenProperties: PromotionTokenProperties) =
         TokenConfig(promotionTokenProperties, keyStore)
+
+    @Bean("adminAuthTokenConfig")
+    fun adminAuthTokenConfig(adminAuthTokenProperties: AuthTokenProperties) =
+        AuthTokenConfig(AuthTokenType.ADMIN, adminAuthTokenProperties, keyStore)
 }
 
-class TokenConfig(tokenProperties: TokenProperties, keyStore: KeyStore) {
+open class TokenConfig(
+    tokenProperties: TokenProperties,
+    keyStore: KeyStore
+) {
     var issuer: String?
     var audience: String?
     var duration: Duration?
@@ -52,4 +58,16 @@ class TokenConfig(tokenProperties: TokenProperties, keyStore: KeyStore) {
             algorithm = Algorithm.ECDSA256(publicKey, privateKey)
         }
     }
+}
+
+class AuthTokenConfig(
+    var type: AuthTokenType,
+    tokenProperties: TokenProperties,
+    keyStore: KeyStore,
+) : TokenConfig(tokenProperties, keyStore) {
+    fun isForAdmin() = type == AuthTokenType.COMMON
+}
+
+enum class AuthTokenType {
+    COMMON, ADMIN
 }

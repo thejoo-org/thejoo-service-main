@@ -11,19 +11,24 @@ import javax.persistence.*
 @Entity
 @Table(name = "users")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
-class User(
+open class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long? = null,
+    open var id: Long? = null,
     @Column
-    val name: String,
+    open val name: String,
     @Column
-    val email: String,
+    open val email: String,
     @Type(type = "jsonb")
     @Column(name = "roles", columnDefinition = "jsonb")
-    val roles: List<String> = listOf(),
+    open val roles: List<String> = listOf(),
 ) : AbstractAuditableEntity(), UserDetails {
     constructor(id: Long, roles: List<Role>) : this(id = id, roles = roles.map(Role::name), name = "", email = "")
+    constructor(name: String, email: String, roles: List<Role>) : this(
+        name = name,
+        email = email,
+        roles = roles.map(Role::name)
+    )
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
         roles.map(::SimpleGrantedAuthority).toMutableSet()
