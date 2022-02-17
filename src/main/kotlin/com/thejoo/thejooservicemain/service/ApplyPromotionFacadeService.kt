@@ -34,7 +34,7 @@ class ApplyPromotionFacadeService(
             addedPoint = targetPromotion.point,
             pointSnapshot = targetMembership.point + targetPromotion.point,
             storeId = targetStore.id!!,
-            data = emptyMap(),
+            data = targetPromotion.toPromotionSnapshot(),
         ).get()
         return try {
             promotionHistoryService.register(uuid = applyPromotionSpec.promotionUUID)

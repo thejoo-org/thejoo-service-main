@@ -19,7 +19,7 @@ class SecurityConfig(
     override fun configure(http: HttpSecurity?) {
         http!!
             .csrf().disable()
-            .cors().disable()
+            .cors().and()
             .exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler)

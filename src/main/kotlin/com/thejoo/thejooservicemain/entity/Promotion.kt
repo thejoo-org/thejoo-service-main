@@ -1,5 +1,6 @@
 package com.thejoo.thejooservicemain.entity
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import javax.persistence.*
 
 @Entity
@@ -18,6 +19,14 @@ class Promotion(
     val description: String,
 ) : AbstractAuditableEntity() {
 
+    fun toPromotionSnapshot() = PromotionSnapshot(title, description)
+
     override fun toString(): String =
         "Promotion(id=$id, storeId=$storeId, point=$point, title='$title', description='$description')"
 }
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
+data class PromotionSnapshot(
+    var title: String? = null,
+    val description: String? = null,
+)
