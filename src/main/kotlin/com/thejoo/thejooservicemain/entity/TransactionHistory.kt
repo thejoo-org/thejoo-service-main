@@ -30,7 +30,7 @@ class TransactionHistory(
     val membershipId: Long,
     @Type(type = "jsonb")
     @Column(name = "data", columnDefinition = "jsonb")
-    var data: Map<String, Any>? = null,
+    val data: PromotionSnapshot,
 ) : AbstractAuditableEntity()
 
 enum class TransactionStatus {

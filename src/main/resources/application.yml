@@ -42,6 +42,11 @@ token:
       password: ${token.keystore.password}
       issuer: ${token.default-issuer}
       audience: ${token.default-audience}
+    admin-auth:
+      alias: thejoo-admin-auth-leaf
+      password: ${token.keystore.password}
+      issuer: ${token.default-issuer}
+      audience: ${token.default-audience}
     user-read:
       alias: thejoo-user-qr-leaf
       password: ${token.keystore.password}
@@ -51,6 +56,11 @@ token:
       alias: thejoo-promotion-leaf
       password: ${token.keystore.password}
       audience: ${token.default-audience}
+admin:
+  user:
+    email: ${MAIN_SERVICE_ADMIN_EMAIL}
+    password: ${MAIN_SERVICE_ADMIN_PASSWORD}
+    name: ${MAIN_SERVICE_ADMIN_NAME:Admin User}
 logging:
   config: classpath:log4j2-${spring.profiles.active}.xml
 
@@ -74,6 +84,10 @@ token:
       duration: PT15M
     promotion:
       duration: PT15M
+admin:
+  user:
+    email: admin@example.com
+    password: Admin123Admin123
 
 ---
 
@@ -87,6 +101,8 @@ token:
   properties:
     auth:
       duration: PT30M
+    admin-auth:
+      duration: PT1H
     user-read:
       duration: PT5M
     promotion:

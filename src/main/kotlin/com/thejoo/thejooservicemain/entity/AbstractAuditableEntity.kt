@@ -14,13 +14,13 @@ import javax.persistence.Version
 abstract class AbstractAuditableEntity {
     @CreatedDate
     @Column(name = "created_at")
-    lateinit var createdAt: LocalDateTime
+    open lateinit var createdAt: LocalDateTime
 
     @LastModifiedDate
     @Column(name = "updated_at")
-    lateinit var updatedAt: LocalDateTime
+    open lateinit var updatedAt: LocalDateTime
 
     @Version
     @Column(name = "version")
-    var version: Long = 0
+    open var version: Long = 0
 }

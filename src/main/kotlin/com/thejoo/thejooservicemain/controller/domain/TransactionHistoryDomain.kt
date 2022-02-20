@@ -1,6 +1,7 @@
 package com.thejoo.thejooservicemain.controller.domain
 
 import com.fasterxml.jackson.annotation.JsonInclude
+import com.thejoo.thejooservicemain.entity.PromotionSnapshot
 import com.thejoo.thejooservicemain.entity.TransactionStatus
 import com.thejoo.thejooservicemain.entity.TransactionType
 import io.swagger.v3.oas.annotations.media.Schema
@@ -26,7 +27,7 @@ data class TransactionHistoryGetResponse(
     @Schema(description = "멤버쉽 ID")
     val membershipId: Long,
     @Schema(description = "거래 내역 데이터")
-    var data: Map<String, Any>?,
+    val data: PromotionSnapshot,
     @Schema(description = "거래 내역 생성일시")
     val createdAt: LocalDateTime,
     @Schema(description = "거래 내역 수정일시")

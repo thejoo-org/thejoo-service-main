@@ -1,6 +1,7 @@
 package com.thejoo.thejooservicemain.service
 
 import com.thejoo.thejooservicemain.entity.Membership
+import com.thejoo.thejooservicemain.entity.PromotionSnapshot
 import com.thejoo.thejooservicemain.entity.TransactionHistory
 import com.thejoo.thejooservicemain.entity.TransactionStatus
 import com.thejoo.thejooservicemain.entity.TransactionType
@@ -23,7 +24,7 @@ class TransactionHistoryService(
         addedPoint: Long,
         pointSnapshot: Long,
         storeId: Long,
-        data: Map<String, Any>? = null,
+        data: PromotionSnapshot,
     ): Future<TransactionHistory> = TransactionHistory(
         type = type,
         membershipId = membershipId,

@@ -17,8 +17,9 @@ class SecurityConfig(
     private val jwtSecurityConfig: JwtSecurityConfig,
 ) : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
-        // TODO: Configure CORS
-        http!!.csrf().disable()
+        http!!
+            .csrf().disable()
+            .cors().and()
             .exceptionHandling()
             .authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -35,6 +36,7 @@ class SecurityConfig(
             .antMatchers("/swagger-ui/**").permitAll()
             .antMatchers("/v3/api-docs/**").permitAll()
             .antMatchers("/api/test/tokens/**").permitAll()
+            .antMatchers("/api/admin/**").permitAll()
             .anyRequest().authenticated()
             .and()
             .apply(jwtSecurityConfig)
