@@ -24,7 +24,7 @@ class ApplyPromotionFacadeService(
         promotionHistoryService.validate(applyPromotionSpec.promotionUUID)
         val targetPromotion = promotionService.getPromotionById(applyPromotionSpec.targetPromotionId)
         val targetStore = storeService.getStoreById(targetPromotion.storeId)
-            .also { it.validateManageableBy(applyPromotionSpec.ownerId) }
+            .also { it.validateManageableBy(applyPromotionSpec.owner.id!!) }
         val targetUser = userService.getUserById(applyPromotionSpec.targetUserId)
         val targetMembership = membershipService.getOrRegisterMembershipAsync(targetUser, targetStore).get()
         val transactionHistory = transactionHistoryService.createTransactionHistoryAsync(

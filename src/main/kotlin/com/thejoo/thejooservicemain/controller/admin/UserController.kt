@@ -2,7 +2,7 @@ package com.thejoo.thejooservicemain.controller.admin
 
 import com.thejoo.thejooservicemain.controller.domain.UserProfileResponse
 import com.thejoo.thejooservicemain.entity.User
-import com.thejoo.thejooservicemain.infrastructure.advice.AdminController
+import com.thejoo.thejooservicemain.infrastructure.annotation.AdminController
 import com.thejoo.thejooservicemain.service.UserService
 import org.springframework.data.domain.Pageable
 import org.springframework.web.bind.annotation.GetMapping
