@@ -14,7 +14,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 @Component
 class PrincipalUserArgumentResolver(
     private val userService: UserService,
-): HandlerMethodArgumentResolver {
+) : HandlerMethodArgumentResolver {
     override fun supportsParameter(parameter: MethodParameter): Boolean =
         parameter.hasParameterAnnotation(PrincipalUser::class.java)
 

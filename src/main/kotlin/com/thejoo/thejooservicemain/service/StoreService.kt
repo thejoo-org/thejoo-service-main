@@ -15,7 +15,7 @@ class StoreService(
         .orElseThrow { TheJooException.ofEntityNotFound("Store NOT found for id = $storeId") }
 
     fun getStoreForUserById(storeId: Long, user: User): Store = storeRepository.findByIdAndOwnerId(storeId, user.id!!)
-        .orElseThrow { TheJooException.ofEntityNotFound("Store NOT found for id = $storeId, userId = ${user.id}")}
+        .orElseThrow { TheJooException.ofEntityNotFound("Store NOT found for id = $storeId, userId = ${user.id}") }
 
     fun getMaybeStoreById(storeId: Long): Optional<Store> = storeRepository.findById(storeId)
 }
