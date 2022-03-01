@@ -68,6 +68,7 @@ enum class ExceptionCode {
     UNAUTHORIZED,
     ACCESS_DENIED,
     INTERNAL_SERVER_ERROR,
+    INVALID_PRINCIPAL,
 
     /**
      * PROMOTION APPLY EXCEPTIONS

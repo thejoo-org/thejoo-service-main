@@ -8,7 +8,7 @@ import java.util.*
 
 data class ApplyPromotionSpec(
     val targetUserId: Long,
-    val ownerId: Long,
+    val owner: User,
     val targetPromotionId: Long,
     val promotionUUID: UUID,
 )
